@@ -19,6 +19,20 @@ struct is_same<Type, Type>
 template <typename Type1, typename Type2>
 constexpr static bool is_same_v = is_same<Type1, Type2>::value;
 
+template <bool Flag, typename T1, typename T2>
+struct conditional
+{
+	using type = T1;
+};
+
+template <typename T1, typename T2>
+struct conditional<false, T1, T2>
+{
+	using type = T2;
+};
+
+template <bool Flag, typename T1, typename T2>
+using conditional_t = typename conditional<Flag, T1, T2>::type;
 
 namespace StaticTypes
 {
