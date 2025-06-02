@@ -73,3 +73,7 @@ Remove all instances of given *Arg* from the given **type_list**, if it exists. 
 ## unique
 
 TODO: Remove all duplicated types within a given **type_list**.
+
+## search
+
+Searches the given **type_list** with a given UnaryPredicate meta function. Returns the first type matching the predicate. If no type is found, return false.

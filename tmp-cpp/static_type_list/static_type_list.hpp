@@ -477,4 +477,40 @@ namespace StaticTypes
 		static_assert(is_same_v<typename remove_all<char, type_list<int, double, int>>::type, type_list<int, double, int>>);
 
 	}
+
+	/* search: 
+		Searches the given type_list with a given UnaryPredicate meta function. 
+		Returns the first type matching the predicate.
+		If no type is found, return false.
+	*/
+	template <template <typename> typename UnaryPredicate, typename List>
+	struct search;
+
+	template <template <typename> typename UnaryPredicate, typename Arg, typename... Args>
+	struct search<UnaryPredicate, type_list<Arg, Args...>>
+	{
+		using type = conditional_t<UnaryPredicate<Arg>::value, Arg, typename search<UnaryPredicate, type_list<Args...>>::type>;
+	};
+
+	template <template <typename> typename UnaryPredicate>
+	struct search<UnaryPredicate, type_list<>>
+	{
+		using type = void;
+	};
+
+	/* search tests */
+	namespace
+	{
+		using search_test_list = type_list<int, double, float>;
+
+		template <typename T>
+		struct TestPredicate
+		{
+			constexpr static bool value = sizeof(T) < 4;
+		};
+
+		static_assert(is_same_v<void, typename search<TestPredicate, search_test_list>::type>);
+
+		static_assert(is_same_v<bool, typename search<TestPredicate, typename push_back<bool, search_test_list>::type>::type>);
+	}
 }
